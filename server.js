@@ -1,44 +1,33 @@
 const express = require("express");
 const app = express();
 
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const urlDB = {};
+const db = {};
 
 app.get("/", (req, res) => {
   res.send(`
-    <h2>Free URL Shortener</h2>
+    <h2>Simple URL Shortener</h2>
     <form method="POST" action="/shorten">
-      <input type="url" name="originalUrl" placeholder="Paste URL here" required />
+      <input name="url" type="url" required placeholder="Paste URL" />
       <button type="submit">Shorten</button>
     </form>
   `);
 });
 
 app.post("/shorten", (req, res) => {
-  const originalUrl = req.body.originalUrl;
-  const shortCode = Math.random().toString(36).substring(2, 7);
-
-  urlDB[shortCode] = { originalUrl, clicks: 0 };
-
-  res.send(`
-    <p>Short URL:</p>
-    <a href="/${shortCode}" target="_blank">/${shortCode}</a>
-    <br><br>
-    <a href="/">Back</a>
-  `);
+  const code = Math.random().toString(36).slice(2, 7);
+  db[code] = req.body.url;
+  res.send(`Short URL: <a href="/${code}">/${code}</a>`);
 });
 
 app.get("/:code", (req, res) => {
-  const data = urlDB[req.params.code];
-  if (!data) return res.send("Invalid or expired link");
-
-  data.clicks++;
-  res.redirect(data.originalUrl);
+  const url = db[req.params.code];
+  if (!url) return res.send("Invalid link");
+  res.redirect(url);
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+  console.log("App running on port", PORT);
 });
