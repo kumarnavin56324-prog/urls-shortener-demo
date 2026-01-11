@@ -1,11 +1,14 @@
 {
-  "name": "url-shortener-demo",
+  "name": "railway-url-shortener",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "node server.js"
   },
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "4.18.2"
   }
 }
